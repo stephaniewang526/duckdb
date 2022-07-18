@@ -99,6 +99,12 @@ public:
 	bool use_temporary_directory = true;
 	//! Directory to store temporary structures that do not fit in memory
 	string temporary_directory;
+	//! MotherDuck username
+	string motherduck_username;
+	//! MotherDuck password
+	string motherduck_password;
+	//! MotherDuck API endpoint (dev, test, or prod)
+	string motherduck_host;
 	//! The collation type of the database
 	string collation = string();
 	//! The order type used when none is specified (default: ASC)

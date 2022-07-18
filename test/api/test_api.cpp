@@ -10,6 +10,24 @@
 using namespace duckdb;
 using namespace std;
 
+TEST_CASE("Test motherduck connection", "[api]") {
+	DBConfig motherduck_config;
+	motherduck_config.motherduck_username = "stephwang";
+	motherduck_config.motherduck_password = "qwerty79";
+	motherduck_config.motherduck_host = "https://motherduck.com/api/v1";
+
+	auto db = make_unique<DuckDB>(":motherduck:", &motherduck_config);
+	auto conn = make_unique<Connection>(*db);
+	// check that the connection works
+	string remote_sql = "create table x as "
+	                    "select * from read_parquet(s3://steph-bucket-1/yellow_tripdata_2022-01.parquet) limit 10";
+	conn->Query(remote_sql);
+	auto result = conn->Query("select count (*) from x");
+	REQUIRE(result->Fetch()->GetValue(0,0) == 10);
+	// destroy the database
+	db.reset();
+}
+
 TEST_CASE("Test using connection after database is gone", "[api]") {
 	auto db = make_unique<DuckDB>(nullptr);
 	auto conn = make_unique<Connection>(*db);

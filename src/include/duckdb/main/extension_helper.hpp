@@ -30,6 +30,7 @@ public:
 
 	static void InstallExtension(DatabaseInstance &db, const string &extension, bool force_install);
 	static void LoadExternalExtension(DatabaseInstance &db, const string &extension);
+	static void LoadMotherDuckExtension(DuckDB &db);
 
 	static string ExtensionDirectory(FileSystem &fs);
 

@@ -30,7 +30,6 @@ public:
 	DUCKDB_API ~DatabaseInstance();
 
 	DBConfig config;
-
 public:
 	DUCKDB_API StorageManager &GetStorageManager();
 	DUCKDB_API Catalog &GetCatalog();

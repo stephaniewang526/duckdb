@@ -54,6 +54,13 @@
 #define HTTPFS_STATICALLY_LOADED false
 #endif
 
+#if defined(BUILD_MOTHERDUCK_EXTENSION) && !defined(DISABLE_BUILTIN_EXTENSIONS)
+#define MOTHERDUCK_STATICALLY_LOADED true
+#include "motherduck-extension.hpp"
+#else
+#define MOTHERDUCK_STATICALLY_LOADED false
+#endif
+
 #if defined(BUILD_VISUALIZER_EXTENSION) && !defined(DISABLE_BUILTIN_EXTENSIONS)
 #include "visualizer-extension.hpp"
 #endif
@@ -86,6 +93,7 @@ static DefaultExtension internal_extensions[] = {
     {"substrait", "Adds support for the Substrait integration", SUBSTRAIT_STATICALLY_LOADED},
     {"fts", "Adds support for Full-Text Search Indexes", FTS_STATICALLY_LOADED},
     {"httpfs", "Adds support for reading and writing files over a HTTP(S) connection", HTTPFS_STATICALLY_LOADED},
+    {"motherduck", "Adds support for a motherduck connection", MOTHERDUCK_STATICALLY_LOADED},
     {"json", "Adds support for JSON operations", JSON_STATICALLY_LOADED},
     {"sqlite_scanner", "Adds support for reading SQLite database files", false},
     {"postgres_scanner", "Adds support for reading from a Postgres database", false},
@@ -108,7 +116,7 @@ DefaultExtension ExtensionHelper::GetDefaultExtension(idx_t index) {
 //===--------------------------------------------------------------------===//
 void ExtensionHelper::LoadAllExtensions(DuckDB &db) {
 	unordered_set<string> extensions {"parquet",   "icu",        "tpch", "tpcds", "fts",     "httpfs",
-	                                  "substrait", "visualizer", "json", "excel", "sqlsmith"};
+	                                  "substrait", "visualizer", "json", "excel", "sqlsmith", "motherduck"};
 	for (auto &ext : extensions) {
 		LoadExtensionInternal(db, ext, true);
 	}
@@ -181,7 +189,13 @@ ExtensionLoadResult ExtensionHelper::LoadExtensionInternal(DuckDB &db, const std
 #endif
 	} else if (extension == "httpfs") {
 #if HTTPFS_STATICALLY_LOADED
-		db.LoadExtension<HTTPFsExtension>();
+		db.LoadExtension<HTTPFSExtension>();
+#else
+		return ExtensionLoadResult::NOT_LOADED;
+#endif
+	} else if (extension == "motherduck") {
+#if MOTHERDUCK_STATICALLY_LOADED
+		db.LoadExtension<MotherDuckExtension>();
 #else
 		return ExtensionLoadResult::NOT_LOADED;
 #endif

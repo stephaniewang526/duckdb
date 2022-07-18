@@ -139,8 +139,16 @@ void DatabaseInstance::Initialize(const char *path, DBConfig *new_config) {
 
 DuckDB::DuckDB(const char *path, DBConfig *new_config) : instance(make_shared<DatabaseInstance>()) {
 	instance->Initialize(path, new_config);
-	if (instance->config.load_extensions) {
-		ExtensionHelper::LoadAllExtensions(*this);
+	// check if it is a MotherDuck connection
+	if (strcmp(path, ":motherduck:") == 0) {
+		instance->config.motherduck_username = new_config->motherduck_username;
+		instance->config.motherduck_password = new_config->motherduck_password;
+		instance->config.motherduck_host = new_config->motherduck_host;
+		ExtensionHelper::LoadExtension(*this, "motherduck");
+	} else {
+		if (instance->config.load_extensions) {
+			ExtensionHelper::LoadAllExtensions(*this);
+		}
 	}
 }
 
