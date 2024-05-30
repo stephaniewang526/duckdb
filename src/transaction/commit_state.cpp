@@ -112,6 +112,8 @@ void CommitState::CommitEntryDrop(CatalogEntry &entry, data_ptr_t dataptr) {
 		case CatalogType::SEQUENCE_ENTRY:
 		case CatalogType::MACRO_ENTRY:
 		case CatalogType::TABLE_MACRO_ENTRY:
+		case CatalogType::TABLE_FUNCTION_ENTRY:
+		case CatalogType::COPY_FUNCTION_ENTRY:
 		case CatalogType::TYPE_ENTRY:
 		case CatalogType::RENAMED_ENTRY:
 		case CatalogType::PREPARED_STATEMENT:
