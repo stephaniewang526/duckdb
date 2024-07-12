@@ -591,6 +591,10 @@ static optional_ptr<HTTPMetadataCache> TryGetMetadataCache(optional_ptr<FileOpen
 	if (use_shared_cache) {
 		return httpfs.GetGlobalCache();
 	} else if (client_context) {
+		// TODO: should follow up with DDB to add some primitives in ClientContext to protect the map
+		static mutex context_registered_state_mutex;
+		lock_guard<mutex> lock(context_registered_state_mutex);
+
 		auto lookup = client_context->registered_state.find("http_cache");
 		if (lookup == client_context->registered_state.end()) {
 			auto cache = make_shared_ptr<HTTPMetadataCache>(true, true);
