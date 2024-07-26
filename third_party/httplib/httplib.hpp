@@ -12,6 +12,11 @@
 #ifndef CPPHTTPLIB_HTTPLIB_H
 #define CPPHTTPLIB_HTTPLIB_H
 
+// MotherDuck patch: force use of poll()-based implementation instead of select()-based one.
+// This lifts the 1024 file descriptor limitation of select().
+// More details at https://github.com/duckdblabs/motherduck/issues/115
+#define CPPHTTPLIB_USE_POLL
+
 /*
  * Configuration
  */
