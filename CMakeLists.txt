@@ -967,7 +967,7 @@ endmacro()
 # TODO: unify this with the base DuckDB logic (note that this is slightly different as it has ReleaseCandidate tag support
 function(duckdb_extension_generate_version OUTPUT_VAR WORKING_DIR)
   find_package(Git QUIET)
-  if(Git_FOUND)
+  if(Git_FOUND AND EXISTS "${CMAKE_SOURCE_DIR}/.git")
     execute_process(
             COMMAND ${GIT_EXECUTABLE} log -1 --format=%h
             WORKING_DIRECTORY ${WORKING_DIR}
