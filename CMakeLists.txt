@@ -966,7 +966,7 @@ endmacro()
 # This function sets OUTPUT_VAR to the VERSION using DuckDB's standard versioning convention (using WORKING_DIR)
 # TODO: unify this with the base DuckDB logic (note that this is slightly different as it has ReleaseCandidate tag support
 function(duckdb_extension_generate_version OUTPUT_VAR WORKING_DIR)
-  find_package(Git)
+  find_package(Git QUIET)
   if(Git_FOUND)
     execute_process(
             COMMAND ${GIT_EXECUTABLE} log -1 --format=%h
