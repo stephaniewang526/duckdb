@@ -966,8 +966,16 @@ endmacro()
 # This function sets OUTPUT_VAR to the VERSION using DuckDB's standard versioning convention (using WORKING_DIR)
 # TODO: unify this with the base DuckDB logic (note that this is slightly different as it has ReleaseCandidate tag support
 function(duckdb_extension_generate_version OUTPUT_VAR WORKING_DIR)
-  find_package(Git QUIET)
-  if(Git_FOUND AND EXISTS "${CMAKE_SOURCE_DIR}/.git")
+  find_package(Git)
+  if(Git_FOUND)
+    execute_process(
+            COMMAND ${GIT_EXECUTABLE} rev-parse --is-inside-work-tree
+            WORKING_DIRECTORY ${WORKING_DIR}
+            OUTPUT_VARIABLE IS_IN_GIT_DIR
+            ERROR_QUIET
+    )
+  endif()
+  if (IS_IN_GIT_DIR)
     execute_process(
             COMMAND ${GIT_EXECUTABLE} log -1 --format=%h
             WORKING_DIRECTORY ${WORKING_DIR}
@@ -1034,7 +1042,7 @@ function(duckdb_extension_load NAME)
   elseif (NOT "${duckdb_extension_load_SOURCE_DIR}" STREQUAL "")
     # Version detection
     if ("${duckdb_extension_load_EXTENSION_VERSION}" STREQUAL "")
-      duckdb_extension_generate_version(EXT_VERSION ${CMAKE_CURRENT_LIST_DIR})
+      duckdb_extension_generate_version(EXT_VERSION ${duckdb_extension_load_SOURCE_DIR})
     else()
       set(EXT_VERSION ${duckdb_extension_load_EXTENSION_VERSION})
     endif()
